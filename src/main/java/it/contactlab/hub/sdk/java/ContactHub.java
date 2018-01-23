@@ -30,9 +30,15 @@ import java.util.Optional;
 public class ContactHub {
 
   private final Auth auth;
+  private final ClientData clientData;
 
   public ContactHub(Auth auth) {
+      this(auth, null);
+  }
+
+  public ContactHub(Auth auth, ClientData clientData) {
     this.auth = auth;
+    this.clientData = clientData;
   }
 
   /**
@@ -56,7 +62,7 @@ public class ContactHub {
    */
   public void addCustomerSession(String customerId, String sessionId)
       throws ApiException, ServerException, HttpException {
-    SessionApi.reconcile(this.auth, customerId, sessionId);
+    SessionApi.reconcile(this.auth, this.clientData, customerId, sessionId);
   }
 
   /**
@@ -71,7 +77,7 @@ public class ContactHub {
    */
   public Customer getCustomer(String id)
       throws ApiException, ServerException, HttpException {
-    return CustomerApi.getById(this.auth, id);
+    return CustomerApi.getById(this.auth, this.clientData, id);
   }
 
   /**
@@ -85,7 +91,7 @@ public class ContactHub {
    */
   public Paginated<Customer> getCustomers()
       throws ApiException, ServerException, HttpException {
-    return CustomerApi.get(this.auth, GetCustomersOptions.builder().build());
+    return CustomerApi.get(this.auth, this.clientData, GetCustomersOptions.builder().build());
   }
 
   /**
@@ -100,7 +106,7 @@ public class ContactHub {
    */
   public Paginated<Customer> getCustomers(GetCustomersOptions options)
       throws ApiException, ServerException, HttpException {
-    return CustomerApi.get(this.auth, options);
+    return CustomerApi.get(this.auth, this.clientData, options);
   }
 
   /**
@@ -117,7 +123,7 @@ public class ContactHub {
       throws ApiException, ServerException, HttpException {
     GetCustomersOptions options = GetCustomersOptions.builder()
                                   .externalId(externalId).build();
-    return CustomerApi.get(this.auth, options);
+    return CustomerApi.get(this.auth, this.clientData, options);
   }
 
   /**
@@ -132,7 +138,7 @@ public class ContactHub {
    */
   public Customer addCustomer(Customer customer)
       throws ApiException, ServerException, HttpException {
-    return CustomerApi.add(this.auth, customer);
+    return CustomerApi.add(this.auth, this.clientData, customer);
   }
 
   /**
@@ -146,7 +152,7 @@ public class ContactHub {
    */
   public void deleteCustomer(String id)
       throws ApiException, ServerException, HttpException {
-    CustomerApi.delete(this.auth, id);
+    CustomerApi.delete(this.auth, this.clientData, id);
   }
 
   /**
@@ -161,7 +167,7 @@ public class ContactHub {
    */
   public Customer updateCustomer(Customer customer)
       throws ApiException, ServerException, HttpException {
-    return CustomerApi.update(this.auth, customer);
+    return CustomerApi.update(this.auth, this.clientData, customer);
   }
 
 
@@ -178,7 +184,7 @@ public class ContactHub {
    */
   public Customer patchCustomer(String customerId, Customer patchCustomer)
       throws ApiException, ServerException, HttpException {
-    return CustomerApi.patch(this.auth, customerId, patchCustomer);
+    return CustomerApi.patch(this.auth, this.clientData, customerId, patchCustomer);
   }
 
   /**
@@ -196,7 +202,7 @@ public class ContactHub {
    */
   public Like addLike(String customerId, Like like)
       throws ApiException, ServerException, HttpException {
-    return LikeApi.add(this.auth, customerId, like);
+    return LikeApi.add(this.auth, this.clientData, customerId, like);
   }
 
   /**
@@ -215,7 +221,7 @@ public class ContactHub {
 
   public Like updateLike(String customerId, Like like)
       throws ApiException, ServerException, HttpException {
-    return LikeApi.update(this.auth, customerId, like);
+    return LikeApi.update(this.auth, this.clientData, customerId, like);
   }
 
   /**
@@ -232,7 +238,7 @@ public class ContactHub {
    */
   public void removeLike(String customerId, String likeId)
       throws ApiException, ServerException, HttpException {
-    LikeApi.remove(this.auth, customerId, likeId);
+    LikeApi.remove(this.auth, this.clientData, customerId, likeId);
   }
 
   /**
@@ -250,7 +256,7 @@ public class ContactHub {
    */
   public Job addJob(String customerId, Job job)
       throws ApiException, ServerException, HttpException {
-    return JobApi.add(this.auth, customerId, job);
+    return JobApi.add(this.auth, this.clientData, customerId, job);
   }
 
   /**
@@ -269,7 +275,7 @@ public class ContactHub {
 
   public Job updateJob(String customerId, Job job)
       throws ApiException, ServerException, HttpException {
-    return JobApi.update(this.auth, customerId, job);
+    return JobApi.update(this.auth, this.clientData, customerId, job);
   }
 
   /**
@@ -286,7 +292,7 @@ public class ContactHub {
    */
   public void removeJob(String customerId, String jobId)
       throws ApiException, ServerException, HttpException {
-    JobApi.remove(this.auth, customerId, jobId);
+    JobApi.remove(this.auth, this.clientData, customerId, jobId);
   }
 
   /**
@@ -304,7 +310,7 @@ public class ContactHub {
    */
   public Education addEducation(String customerId, Education education)
       throws ApiException, ServerException, HttpException {
-    return EducationApi.add(this.auth, customerId, education);
+    return EducationApi.add(this.auth, this.clientData, customerId, education);
   }
 
   /**
@@ -323,7 +329,7 @@ public class ContactHub {
 
   public Education updateEducation(String customerId, Education education)
       throws ApiException, ServerException, HttpException {
-    return EducationApi.update(this.auth, customerId, education);
+    return EducationApi.update(this.auth, this.clientData, customerId, education);
   }
 
   /**
@@ -340,7 +346,7 @@ public class ContactHub {
    */
   public void removeEducation(String customerId, String educationId)
       throws ApiException, ServerException, HttpException {
-    EducationApi.remove(this.auth, customerId, educationId);
+    EducationApi.remove(this.auth, this.clientData, customerId, educationId);
   }
 
   /**
@@ -358,7 +364,7 @@ public class ContactHub {
    */
   public Customer addTag(String customerId, String tag)
       throws ApiException, ServerException, HttpException {
-    return TagApi.add(this.auth, customerId, tag);
+    return TagApi.add(this.auth, this.clientData, customerId, tag);
   }
 
   /**
@@ -376,7 +382,7 @@ public class ContactHub {
    */
   public Customer removeTag(String customerId, String tag)
       throws ApiException, ServerException, HttpException {
-    return TagApi.remove(this.auth, customerId, tag);
+    return TagApi.remove(this.auth, this.clientData, customerId, tag);
   }
 
   /**
@@ -390,7 +396,7 @@ public class ContactHub {
    */
   public void addEvent(Event newEvent)
       throws ApiException, ServerException, HttpException {
-    EventApi.add(this.auth, newEvent);
+    EventApi.add(this.auth, this.clientData, newEvent);
   }
 
   /**
@@ -405,7 +411,7 @@ public class ContactHub {
    */
   public Event getEvent(String id)
       throws ApiException, ServerException, HttpException {
-    return EventApi.getById(this.auth, id);
+    return EventApi.getById(this.auth, this.clientData, id);
   }
 
   /**
@@ -420,7 +426,7 @@ public class ContactHub {
    */
   public Paginated<Event> getEvents(String customerId)
       throws ApiException, ServerException, HttpException {
-    return EventApi.get(this.auth, customerId, EventFilters.builder().build());
+    return EventApi.get(this.auth, this.clientData, customerId, EventFilters.builder().build());
   }
 
   /**
@@ -436,7 +442,7 @@ public class ContactHub {
    */
   public Paginated<Event> getEvents(String customerId, EventFilters filters)
       throws ApiException, ServerException, HttpException {
-    return EventApi.get(this.auth, customerId, filters);
+    return EventApi.get(this.auth, this.clientData, customerId, filters);
   }
 
   /**

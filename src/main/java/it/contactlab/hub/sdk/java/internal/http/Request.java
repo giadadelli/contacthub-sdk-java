@@ -1,6 +1,7 @@
-package it.contactlab.hub.sdk.java.http;
+package it.contactlab.hub.sdk.java.internal.http;
 
 import it.contactlab.hub.sdk.java.Auth;
+import it.contactlab.hub.sdk.java.ClientData;
 import it.contactlab.hub.sdk.java.exceptions.ApiException;
 import it.contactlab.hub.sdk.java.exceptions.HttpException;
 import it.contactlab.hub.sdk.java.exceptions.ServerException;
@@ -9,6 +10,8 @@ import it.contactlab.hub.sdk.java.models.ApiErrorResponse;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.HttpRequest;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,14 +23,14 @@ public class Request {
    * Sends a generic GET request and returns the response String.
    */
   public static String doGet(
-      Auth auth, String endpoint, Map<String, Object> queryString
+      Auth auth, ClientData clientData, String endpoint, Map<String, Object> queryString
   ) throws ApiException, ServerException, HttpException {
     String url = auth.apiUrl + "/workspaces/" + auth.workspaceId + endpoint;
 
     try {
       HttpResponse<String> response = Unirest
           .get(url)
-          .header("Authorization", "Bearer " + auth.token)
+          .headers(headersNoContent(auth, clientData))
           .queryString(queryString)
           .asString();
 
@@ -43,23 +46,22 @@ public class Request {
     }
   }
 
-  public static String doGet(Auth auth, String endpoint)
+  public static String doGet(Auth auth, ClientData clientData, String endpoint)
       throws ApiException, ServerException, HttpException {
-    return doGet(auth, endpoint, Collections.emptyMap());
+    return doGet(auth, clientData, endpoint, Collections.emptyMap());
   }
 
   /**
    * Sends a generic POST request and returns the response String.
    */
-  public static String doPost(Auth auth, String endpoint, String payload)
+  public static String doPost(Auth auth, ClientData clientData, String endpoint, String payload)
       throws ApiException, ServerException, HttpException {
     try {
       String url = auth.apiUrl + "/workspaces/" + auth.workspaceId + endpoint;
 
       HttpResponse<String> response = Unirest
           .post(url)
-          .header("Authorization", "Bearer " + auth.token)
-          .header("Content-Type", "application/json")
+          .headers(headersWithContent(auth, clientData))
           .body(payload)
           .asString();
 
@@ -78,14 +80,14 @@ public class Request {
   /**
    * Sends a generic DELETE request and returns the response String.
    */
-  public static String doDelete(Auth auth, String endpoint)
+  public static String doDelete(Auth auth, ClientData clientData, String endpoint)
       throws ApiException, ServerException, HttpException {
     try {
       String url = auth.apiUrl + "/workspaces/" + auth.workspaceId + endpoint;
 
       HttpResponse<String> response = Unirest
           .delete(url)
-          .header("Authorization", "Bearer " + auth.token)
+          .headers(headersNoContent(auth, clientData))
           .asString();
 
       if (response.getStatus() >= 400) {
@@ -103,15 +105,14 @@ public class Request {
   /**
    * Sends a generic PUT request and returns the response String.
    */
-  public static String doPut(Auth auth, String endpoint, String payload)
+  public static String doPut(Auth auth, ClientData clientData, String endpoint, String payload)
       throws ApiException, ServerException, HttpException {
     try {
       String url = auth.apiUrl + "/workspaces/" + auth.workspaceId + endpoint;
 
       HttpResponse<String> response = Unirest
           .put(url)
-          .header("Authorization", "Bearer " + auth.token)
-          .header("Content-Type", "application/json")
+          .headers(headersWithContent(auth, clientData))
           .body(payload)
           .asString();
 
@@ -130,15 +131,14 @@ public class Request {
   /**
    * Sends a generic PATCH request and returns the response String.
    */
-  public static String doPatch(Auth auth, String endpoint, String payload)
+  public static String doPatch(Auth auth, ClientData clientData, String endpoint, String payload)
       throws ApiException, ServerException, HttpException {
     try {
       String url = auth.apiUrl + "/workspaces/" + auth.workspaceId + endpoint;
 
       HttpResponse<String> response = Unirest
           .patch(url)
-          .header("Authorization", "Bearer " + auth.token)
-          .header("Content-Type", "application/json")
+          .headers(headersWithContent(auth, clientData))
           .body(payload)
           .asString();
 
@@ -154,4 +154,19 @@ public class Request {
     }
   }
 
+  private static Map<String, String> headersNoContent(Auth auth, ClientData clientData) {
+    Map<String, String> headers = new HashMap<>();
+    headers.put("Authorization", "Bearer " + auth.token);
+    if (clientData != null) {
+      headers.put("Contactlab-Tracing-ID", clientData.correlationId);
+    }
+    return headers;
+  }
+    
+  private static Map<String, String> headersWithContent(Auth auth, ClientData clientData) {
+    Map<String, String> headers = headersNoContent(auth, clientData);
+    headers.put("Content-Type", "application/json");
+    return headers;
+  }
+  
 }

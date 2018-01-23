@@ -1,4 +1,4 @@
-package it.contactlab.hub.sdk.java.gson;
+package it.contactlab.hub.sdk.java.internal.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

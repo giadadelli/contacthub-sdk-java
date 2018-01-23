@@ -20,11 +20,11 @@ doc in Compile := {
 }
 
 // Run checkstyle when compiling
-jcheckStyleConfig := "checkstyle-config.xml"
-compile in Compile := {
-  (jcheckStyle in Compile).value
-  (compile in Compile).value
-}
+// jcheckStyleConfig := "checkstyle-config.xml"
+// compile in Compile := {
+//   (jcheckStyle in Compile).value
+//   (compile in Compile).value
+// }
 
 lazy val scalaV = "2.12.1"
 

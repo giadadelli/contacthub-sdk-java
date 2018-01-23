@@ -1,6 +1,6 @@
 package it.contactlab.hub.sdk.java.exceptions;
 
-import it.contactlab.hub.sdk.java.gson.ContactHubGson;
+import it.contactlab.hub.sdk.java.internal.gson.ContactHubGson;
 import it.contactlab.hub.sdk.java.models.ApiErrorResponse;
 
 import com.google.gson.Gson;
